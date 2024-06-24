@@ -110,3 +110,4 @@ C:\Users\User\Desktop\Faculdade\C#\Loja\loja\bin\Debug\net8.0\Microsoft.Identity
 C:\Users\User\Desktop\Faculdade\C#\Loja\loja\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\User\Desktop\Faculdade\C#\Loja\loja\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\User\Desktop\Faculdade\C#\Loja\loja\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\User\Desktop\Faculdade\C#\Loja\Loja\obj\Debug\net8.0\Loja.sourcelink.json

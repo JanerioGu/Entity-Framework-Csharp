@@ -20,6 +20,8 @@ builder.Services.AddScoped<FornecedorService>();
 builder.Services.AddScoped<VendaService>();
 builder.Services.AddScoped<DepositoService>();
 builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<ServicoService>();
+builder.Services.AddScoped<ContratoService>();
 
 // Configuração do DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -259,17 +261,59 @@ app.MapPost("/depositos/{depositoId}/produtos/{produtoId}/adicionar", async (int
     return Results.Ok();
 }).RequireAuthorization();
 
+// Serviços
+app.MapPost("/servicos", async (Servico servico, ServicoService servicoService) =>
+{
+    await servicoService.AddServicoAsync(servico);
+    return Results.Created($"/servicos/{servico.Id}", servico);
+}).RequireAuthorization();
+
+app.MapPut("/servicos/{id}", async (int id, Servico servico, ServicoService servicoService) =>
+{
+    if (id != servico.Id)
+    {
+        return Results.BadRequest("Service ID mismatch");
+    }
+
+    await servicoService.UpdateServicoAsync(servico);
+    return Results.Ok();
+}).RequireAuthorization();
+
+app.MapGet("/servicos/{id}", async (int id, ServicoService servicoService) =>
+{
+    var servico = await servicoService.GetServicoByIdAsync(id);
+    if (servico == null)
+    {
+        return Results.NotFound($"Service with ID {id} not found.");
+    }
+    return Results.Ok(servico);
+}).RequireAuthorization();
+
+// Contratos
+app.MapPost("/contratos", async (Contrato contrato, ContratoService contratoService) =>
+{
+    await contratoService.AddContratoAsync(contrato);
+    return Results.Created($"/contratos/{contrato.Id}", contrato);
+}).RequireAuthorization();
+
+app.MapGet("/clientes/{clienteId}/servicos", async (int clienteId, ContratoService contratoService) =>
+{
+    var servicos = await contratoService.GetServicosByClienteIdAsync(clienteId);
+    return Results.Ok(servicos);
+}).RequireAuthorization();
+
+
 
 app.Run();
 
-public record UserLogin(string Username, string Password);
+public record UserLogin(string Email, string Senha);
 
 public class UserManager
 {
     private readonly JwtSettings _jwtSettings;
     private readonly List<User> _users = new()
     {
-        new User { Username = "test", Password = "test123" }
+        new User { Email = "janerio32@hotmail.com", Senha = "123456" }
     };
 
     public UserManager(IOptions<JwtSettings> jwtSettings)
@@ -279,7 +323,7 @@ public class UserManager
 
     public async Task<string?> Authenticate(UserLogin userLogin)
     {
-        var user = _users.SingleOrDefault(u => u.Username == userLogin.Username && u.Password == userLogin.Password);
+        var user = _users.SingleOrDefault(u => u.Email == userLogin.Email && u.Senha == userLogin.Senha);
         if (user == null)
             return null;
 
@@ -289,7 +333,7 @@ public class UserManager
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Email)
             }),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
@@ -310,6 +354,6 @@ public class JwtSettings
 
 public class User
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
+    public string Email { get; set; }
+    public string Senha { get; set; }
 }

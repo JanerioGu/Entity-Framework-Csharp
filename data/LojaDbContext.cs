@@ -12,6 +12,8 @@ namespace loja.data
         public DbSet<Venda> Vendas { get; set; }
         public DbSet<Deposito> Depositos { get; set; }
         public DbSet<DepositoProduto> DepositoProdutos { get; set; }
+        public DbSet<Servico> Servicos { get; set; }
+        public DbSet<Contrato> Contratos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +31,17 @@ namespace loja.data
                 .HasOne(dp => dp.Produto)
                 .WithMany()
                 .HasForeignKey(dp => dp.ProdutoId);
+
+            // Adicionar mapeamento para Contrato
+            modelBuilder.Entity<Contrato>()
+                .HasOne(c => c.Cliente)
+                .WithMany()
+                .HasForeignKey(c => c.ClienteId);
+
+            modelBuilder.Entity<Contrato>()
+                .HasOne(c => c.Servico)
+                .WithMany()
+                .HasForeignKey(c => c.ServicoId);
         }
     }
 }
