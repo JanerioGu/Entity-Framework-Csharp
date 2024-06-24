@@ -1,0 +1,69 @@
+Requisições necessárias para que rode no POSTMAN:
+
+1 - Fazer o LOGIN, método POST:
+
+localhost:5089/login
+
+{
+    "Email": "janerio32@hotmail.com",
+    "Senha": "123456"
+}
+
+Retornará o token. Deverá ser usado para a autenticação dos demais requisições.
+
+2 - Gravar dados de um novo serviço, método POST:
+
+localhost:5089/servicos
+
+{
+    "Nome": "Troca lâmpada farol TITAN 150",
+    "Preco": 30.00,
+    "Status": true
+}
+
+Gravará o serviço e dará o ID "1" automaticamente.
+
+3 - Atualizar os Dados de um serviço, método PUT.
+
+localhost:5089/servicos/1
+
+{
+    "Id": 1,
+    "Nome": "Troca lâmpada farol TITAN 150 e TITAN 00",
+    "Preco": 60.00,
+    "Status": true
+}
+
+Atualizará o serviço do ID selecionado.
+
+4 - Consultar os dados de um serviço a partir do ID, método GET:
+
+
+localhost:5089/servicos/1
+
+
+{
+    "Id": 1,
+    "Nome": "Troca lâmpada farol TITAN 150 e TITAN 00",
+    "Preco": 60.00,
+    "Status": true
+}
+
+Consulta os serviços do ID 1.
+
+5 - Registrar um contrato, método POST:
+
+localhost:5089/contratos
+
+{
+    "ClienteId": 1,
+    "ServicoId": 1,
+    "PrecoCobrado": 60.00,
+    "DataContratacao": "2023-06-24T20:30:00Z"
+}
+
+Registra um novo contrato com o ID 1.
+
+6 - Consultar todos os serviços contratados pelo cliente que buscaremos pelo ID, método GET:
+
+localhost:5089/clientes/1/servicos
